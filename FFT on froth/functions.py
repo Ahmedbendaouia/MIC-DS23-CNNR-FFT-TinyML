@@ -85,12 +85,18 @@ def prepareFileAugm(r, video_type):
     writer.close()
 
 def image_to_fft_pca(image):
+    # read the image
     img = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    # apply 2d fft
     f = np.fft.fft2(img)
+    # shift low frequency components to the center of the spectrum
     fshift = np.fft.fftshift(f)
-    magnitude_spectrum = 20*np.log(np.abs(fshift))
-    pca = PCA(n_components=1)
-    features = pca.fit_transform(magnitude_spectrum)
+    # fft results are complex numbers
+    # so we need to compute the magnitude spectrum of the complex numbers (module in french)
+    # mod(z) = |a + bi| = sqrt(a² + b²)
+    magnitude_spectrum = np.log(np.sqrt(fshift.real**2 + fshift.imag**2)) # we apply log to make the spectrum more visible
+    # apply pca with one component to reduce the dimensionality into one vector
+    features = PCA(n_components=1).fit_transform(magnitude_spectrum)
     features = features.reshape(-1)
     return features
 
