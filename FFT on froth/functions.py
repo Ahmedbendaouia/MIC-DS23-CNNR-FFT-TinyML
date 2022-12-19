@@ -31,7 +31,7 @@ def extractImages(pathIn, pathOut):
             print("frame "+vid+"-%d.jpg" % count,success)
         count = count + 1
 
-def prepareFileAugm(r, video_type):
+def prepareFileAugm(Cu_r, Fe_r, Pb_r, Zn_r, video_type):
     writer = pd.ExcelWriter('./data_' + video_type + '_augm_Pb.xlsx', engine = 'xlsxwriter')
     # load the test dataset pb
     test_path = "../" + video_type + "_resizedimages"
@@ -39,7 +39,7 @@ def prepareFileAugm(r, video_type):
 
     file_name = 'DataSource.xlsx' # name of your excel file
     
-    df = read_excel(file_name, sheet_name = 'Relavage 4')
+    df = read_excel(file_name, sheet_name = 'Relavage Pb')
     name_video=df["points"]
     Analyses = {"points": [],
         "Cu (%)": [],
@@ -70,16 +70,16 @@ def prepareFileAugm(r, video_type):
         pb = float(df_Pb.iloc[i]['Pb (%)'])
         zn = float(df_Pb.iloc[i]['Zn (%)'])
         
-        ofsset = random.uniform(0, r)
+        ofsset = random.uniform(0, Cu_r)
         df_Pb.at[i,'Cu (%)'] = cu + ofsset
-        ofsset = random.uniform(0, r)
+        ofsset = random.uniform(0, Fe_r)
         df_Pb.at[i,'Fe (%)'] = fe + ofsset
-        ofsset = random.uniform(0, r)
+        ofsset = random.uniform(0, Pb_r)
         df_Pb.at[i,'Pb (%)'] = pb + ofsset
-        ofsset = random.uniform(0, r)
+        ofsset = random.uniform(0, Zn_r)
         df_Pb.at[i,'Zn (%)'] = zn + ofsset
     
-    df_Pb.to_excel(writer, sheet_name = 'Relavage 4', index = None, header=True)
+    df_Pb.to_excel(writer, sheet_name = 'Relavage Pb', index = None, header=True)
     
     writer.save()
     writer.close()
@@ -101,7 +101,7 @@ def image_to_fft_pca(image):
     return features
 
 def TenneurReel(Video, FileName):
-    df = read_excel(FileName, sheet_name = 'Relavage 4')
+    df = read_excel(FileName, sheet_name = 'Relavage Pb')
     CuReel, FeReel, PbReel, ZnReel = 0, 0, 0, 0
     for i in range(0, df.shape[0]):
         if Video == df['points'].values[i]:
