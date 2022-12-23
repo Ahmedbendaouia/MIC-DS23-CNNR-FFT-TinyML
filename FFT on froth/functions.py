@@ -96,7 +96,8 @@ def image_to_fft_pca(image):
     # mod(z) = |a + bi| = sqrt(a² + b²)
     magnitude_spectrum = np.log(np.sqrt(fshift.real**2 + fshift.imag**2)) # we apply log to make the spectrum more visible
     # apply pca with one component to reduce the dimensionality into one vector
-    features = PCA(n_components=1).fit_transform(magnitude_spectrum)
+    features = PCA(n_components=2).fit_transform(magnitude_spectrum)
+    features = features.flatten()
     features = features.reshape(-1)
     return features
 
